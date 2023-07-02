@@ -6,6 +6,7 @@ const conversationRouter=require('../routes/conversationsRoutes');
 const messageRouter=require('../routes/messageRoutes');
 const authRouter=require('../routes/auth');
 const dotenv=require('dotenv');
+const path=require('path');
 require("./connection.js");
 const PORT=process.env.PORT || 8000;
 const app=express();
@@ -19,6 +20,10 @@ app.use("/api/user",userRouter);
 app.use('/api/auth',authRouter);
 app.use("/api/conversation/",conversationRouter);
 app.use("/api/message",messageRouter);
+
+// Deployment
+const __dirname1=path.resolve();
+app.use(express.static(path.join(__dirname1,"/build")));
 
 const server = app.listen(PORT,()=>{
     console.log(`Working at PORT No. ${PORT}`);
