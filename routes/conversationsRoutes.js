@@ -1,4 +1,5 @@
 const Conversations= require('../models/conversations');
+const Messages= require('../models/message');
 const authmiddleware=require('../middleware/userauth');
 const mongoose= require('mongoose');
 const express= require('express');
@@ -37,4 +38,17 @@ router.get("/getAllConversations/:id",authmiddleware,async (req,res)=>{
         res.status(500).send(err);
     }
 })
+
+router.delete("/deleteAConversation/:id",authmiddleware,async (req,res)=>{
+    try{
+        await Conversations.deleteMany({_id:req.params.id});
+        await Messages.deleteMany({conversationId:req.params.id});
+        res.status(200).send("Conversation Deleted")
+    }catch(err){
+        console.log(err);
+        res.status(500).send(err);
+    }
+})
+
+
 module.exports=router;

@@ -24,6 +24,9 @@ app.use("/api/message",messageRouter);
 // Deployment
 const __dirname1=path.resolve();
 app.use(express.static(path.join(__dirname1,"/build")));
+app.get('*',(req,res)=>{
+    res.sendFile(path.join(__dirname1,"/build/index.html"));
+})
 
 const server = app.listen(PORT,()=>{
     console.log(`Working at PORT No. ${PORT}`);
@@ -42,6 +45,10 @@ io.on('connection', socket => {
         socket.join(`${data}`);
         console.log("Joined a room");
     });
+    socket.on('newConversation',(data)=>{
+        socket.in(data.to).emit('newConversationResponse',data);
+        console.log("New Conversation Started");
+    })
     socket.on('message',(data)=>{
         socket.in(data.to).emit('messageResponse',data);
         console.log("recieved a message!!!");

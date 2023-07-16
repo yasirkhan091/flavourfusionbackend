@@ -81,12 +81,13 @@ router.patch('/unfollow/:id',authmiddleware,async(req,res)=>{
 
 })
 
-// get all followers
-router.get('/followers/:id',authmiddleware,async (req,res)=>{
+// get all followers and followings
+router.get('/followersAndFollowings/:id',authmiddleware,async (req,res)=>{
     try{
-        const result= await User.findById({_id:req.params.id}, 'followers');
-        const totalResult= await User.find({_id:{$in:result.followers}}).select("username profileImagescr");
-        res.status(200).json(totalResult);
+        const result= await User.findById({_id:req.params.id}, 'followers followings');
+        const followersResult= await User.find({_id:{$in:result.followers}}).select("username profileImagescr");
+        const followingsResult= await User.find({_id:{$in:result.followings}}).select("username profileImagescr");
+        res.status(200).json({followers:followersResult, followings:followingsResult});
     }catch(err)
     {
         console.log(err);
